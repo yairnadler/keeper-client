@@ -5,6 +5,7 @@ import Zoom from "@mui/material/Zoom";
 
 function CreateArea(props) {
   const [isExpanded, setIsExpended] = useState(false);
+  const [id, setID] = useState(0);
   const [note, setNote] = useState({
     title: "",
     content: "",
@@ -21,6 +22,10 @@ function CreateArea(props) {
   }
 
   function submitNote(event) {
+    note["_id"] = id;
+    setID((prevID) => {
+      return prevID + 1;
+    });
     props.onAdd(note);
     setNote({
       title: "",
