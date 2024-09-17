@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import Note from "./Note";
@@ -8,24 +8,33 @@ import axios from "axios";
 function App() {
   const [notes, setNotes] = useState([]);
 
+  // Load notes from DB.
+  async function loadNotesFromServer() {
+    try {
+      const serverNotes = await axios.get("http://localhost:3000/getNotes");
+      // console.log(serverNotes.data);
+      setNotes(serverNotes.data);
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+
+  useEffect(() => {
+    loadNotesFromServer();
+  }, []);
+
   async function addNote(newNote) {
     await axios
       .post("http://localhost:3000/newNote", newNote)
       .then((result) => console.log(result))
       .catch((err) => console.log(err));
 
-    setNotes((prevNotes) => {
-      return [...prevNotes, newNote];
-    });
+    loadNotesFromServer();
   }
 
   async function deleteNote(id) {
     await axios.delete(`http://localhost:3000/notes/${id}`);
-    setNotes((prevNotes) => {
-      return prevNotes.filter((noteItem) => {
-        return noteItem._id !== id;
-      });
-    });
+    loadNotesFromServer();
   }
 
   return (
