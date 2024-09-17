@@ -1,10 +1,10 @@
 import axios from "axios";
+import { LOCALHOST } from "./constants.js";
 
-// Load notes from DB.
+// Load notes from server
 export async function loadNotesFromServer(setNotes) {
   try {
-    const serverNotes = await axios.get("http://localhost:3000/getNotes");
-    // console.log(serverNotes.data);
+    const serverNotes = await axios.get(LOCALHOST + "/notes");
     setNotes(serverNotes.data);
   } catch (err) {
     console.log(err.message);
