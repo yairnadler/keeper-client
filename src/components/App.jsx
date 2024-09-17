@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { initNotes } from "../utils/hooks";
+import { loadNotesFromServer } from "../utils/utils.js";
+import { LOCALHOST } from "../utils/constants.js";
 import Header from "./Header";
 import Footer from "./Footer";
 import Note from "./Note";
@@ -8,33 +11,24 @@ import axios from "axios";
 function App() {
   const [notes, setNotes] = useState([]);
 
-  // Load notes from DB.
-  async function loadNotesFromServer() {
+  initNotes(setNotes);
+
+  async function addNote(newNote) {
     try {
-      const serverNotes = await axios.get("http://localhost:3000/getNotes");
-      // console.log(serverNotes.data);
-      setNotes(serverNotes.data);
+      await axios.post(LOCALHOST + "/newNote", newNote);
+      loadNotesFromServer(setNotes);
     } catch (err) {
-      console.log(err.message);
+      console.log(err);
     }
   }
 
-  useEffect(() => {
-    loadNotesFromServer();
-  }, []);
-
-  async function addNote(newNote) {
-    await axios
-      .post("http://localhost:3000/newNote", newNote)
-      .then((result) => console.log(result))
-      .catch((err) => console.log(err));
-
-    loadNotesFromServer();
-  }
-
   async function deleteNote(id) {
-    await axios.delete(`http://localhost:3000/notes/${id}`);
-    loadNotesFromServer();
+    try {
+      await axios.delete(LOCALHOST + `/notes/${id}`);
+      loadNotesFromServer(setNotes);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   return (

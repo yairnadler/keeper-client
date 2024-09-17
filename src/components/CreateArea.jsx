@@ -5,8 +5,9 @@ import Fab from "@mui/material/Fab";
 import Zoom from "@mui/material/Zoom";
 
 function CreateArea(props) {
+  const generateID = v4();
   const [isExpanded, setIsExpended] = useState(false);
-  const [id, setID] = useState(v4());
+  const [id, setID] = useState(generateID);
   const [note, setNote] = useState({
     title: "",
     content: "",
@@ -24,9 +25,7 @@ function CreateArea(props) {
 
   function submitNote(event) {
     note["_id"] = id;
-    setID((prevID) => {
-      return v4();
-    });
+    setID(generateID);
     props.onAdd(note);
     setNote({
       title: "",
